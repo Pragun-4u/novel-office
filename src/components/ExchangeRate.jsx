@@ -98,6 +98,12 @@ const ExchangeRate = () => {
             {getFormatCurrency(data?.amount, data?.from)} ≈{" "}
             {getFormatCurrency(convertedAmount, data?.to)}
           </h3>
+          {!!sampleData?.time_last_update_utc && (
+            <h5>
+              Last updated:{" "}
+              {new Date(sampleData?.time_last_update_utc).toDateString()}
+            </h5>
+          )}
           <Table
             rows={rows || []}
             columns={["Currency", "Amount"]}
