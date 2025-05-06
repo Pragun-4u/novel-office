@@ -1,12 +1,12 @@
-const useConvertCurrency = ({ from, to, amount }) => {
+const getConvertCurrency = ({ from, to, amount }) => {
   const fromRate = data.conversion_rates[from];
   const convertedToUSD = amount / fromRate;
   const toRate = data.conversion_rates[to];
   const convertedAmount = convertedToUSD * toRate;
-  return { convertedAmount };
+  return convertedAmount;
 };
 
-export default useConvertCurrency;
+export default getConvertCurrency;
 
 const data = {
   result: "success",

@@ -23,6 +23,7 @@ export default function Dropdown({ label = "", name, options = [] }) {
           label={label}
           name={name}
           onChange={handleChange}
+          required
         >
           {options.map((option, index) => (
             <MenuItem key={index} value={option?.value}>

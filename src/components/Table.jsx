@@ -9,7 +9,12 @@ import {
 } from "@mui/material";
 import React from "react";
 
-function AmortizationTable({ tableName, rows, columns = [] }) {
+function CommonTable({
+  tableName = "Table Name",
+  rows = [],
+  columns = [],
+  uniqueKey = "",
+}) {
   return (
     <TableContainer
       component={Paper}
@@ -20,7 +25,7 @@ function AmortizationTable({ tableName, rows, columns = [] }) {
       <h3
         style={{
           width: "100%",
-          whiteSpace: "nowrap",
+          // whiteSpace: "nowrap",
           fontSize: "20px",
           marginLeft: "10px",
         }}
@@ -37,7 +42,7 @@ function AmortizationTable({ tableName, rows, columns = [] }) {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.month}>
+            <TableRow key={row[uniqueKey]}>
               {Object.values(row).map((value, index) => (
                 <TableCell key={index}>{value}</TableCell>
               ))}
@@ -49,4 +54,4 @@ function AmortizationTable({ tableName, rows, columns = [] }) {
   );
 }
 
-export default AmortizationTable;
+export default CommonTable;

@@ -1,9 +1,9 @@
 import { Button, TextField } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import useCalculateEMI from "../hooks/useCalculateEMI";
 import getFormatCurrency from "../hooks/getFormatCurrency";
 import useCalculateAmortizationSchedule from "../hooks/useAmortizationSchedule";
-import AmortizationTable from "./AmortizationTable";
+import useCalculateEMI from "../hooks/useCalculateEMI";
+import Table from "./Table";
 
 const fields = [
   {
@@ -104,10 +104,11 @@ const LoanCalculatorDashboard = () => {
             <h2>Monthly EMI : {getFormatCurrency(calculatedEMI, "INR")} </h2>
           </div>
           <div>
-            <AmortizationTable
+            <Table
               columns={["Month", "Principal", "Interest", "Remaining Balance"]}
               rows={rows}
               tableName="Amortization Schedule"
+              uniqueKey="month"
             />
           </div>
         </>

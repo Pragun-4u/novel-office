@@ -3,8 +3,10 @@ import React, { useMemo, useState } from "react";
 import Dropdown from "./ui/Dropdown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import CheckIcon from "@mui/icons-material/Check";
-import useConvertCurrency from "../hooks/useConvertCurrency";
+import getConvertCurrency from "../hooks/getConvertCurrency";
 import getFormatCurrency from "../hooks/getFormatCurrency";
+import Table from "./Table";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 const ExchangeRate = () => {
   const [data, setData] = useState({});
@@ -13,16 +15,34 @@ const ExchangeRate = () => {
       label: key,
       value: key,
     }));
-  });
+  }, [sampleData]);
 
-  const { convertedAmount } = useConvertCurrency(data);
+  const convertedAmount = getConvertCurrency(data);
+
+  const rows = useMemo(() => {
+    return Object.keys(sampleData?.conversion_rates)
+      ?.filter((currency) => currency !== data?.to)
+      ?.map((currency) => {
+        return {
+          currency,
+          amount: getFormatCurrency(
+            getConvertCurrency({
+              from: data?.from,
+              to: currency,
+              amount: data?.amount,
+            }),
+            currency
+          ),
+        };
+      });
+  }, [data, convertedAmount]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formdata = new FormData(e.target);
     const from = formdata.get("from");
     const to = formdata.get("to");
     const amount = formdata.get("amount");
-    console.log(from, to, amount);
     setData({ from, to, amount });
   };
   return (
@@ -52,6 +72,12 @@ const ExchangeRate = () => {
           <KeyboardArrowRightIcon
             sx={{ fontSize: "40px", display: { xs: "none", md: "block" } }}
           />
+          <ArrowDownwardIcon
+            sx={{
+              fontSize: "20px",
+              display: { xs: "block", md: "none" },
+            }}
+          />
           <Dropdown name={"to"} label={"To"} options={conversion_rates} />
           <Button
             sx={{
@@ -67,12 +93,21 @@ const ExchangeRate = () => {
       </form>
 
       {!!convertedAmount && (
-        // beautify it
-
-        <h3>
-          {getFormatCurrency(data?.amount, data?.from)} ≈{" "}
-          {getFormatCurrency(convertedAmount, data?.to)}
-        </h3>
+        <>
+          <h3>
+            {getFormatCurrency(data?.amount, data?.from)} ≈{" "}
+            {getFormatCurrency(convertedAmount, data?.to)}
+          </h3>
+          <Table
+            rows={rows || []}
+            columns={["Currency", "Amount"]}
+            tableName={`All other conversions for ${getFormatCurrency(
+              data?.amount,
+              data?.from
+            )}`}
+            uniqueKey={"currency"}
+          />
+        </>
       )}
     </div>
   );
