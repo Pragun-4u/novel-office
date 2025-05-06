@@ -17,6 +17,7 @@ const ExchangeRate = () => {
   const [conversionData, setConversionData] = useState({
     conversion_rates: {},
   });
+
   const conversion_rates = useMemo(() => {
     return Object.keys(conversionData?.conversion_rates)?.map((key) => ({
       label: key,
