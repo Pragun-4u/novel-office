@@ -64,7 +64,7 @@ const LoanCalculatorDashboard = () => {
               flexDirection: "row",
               alignItems: "center",
               gap: "10px",
-              // border: "1px solid red",
+              flexWrap: "wrap",
               marginTop: "20px",
             }}
           >
