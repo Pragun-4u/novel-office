@@ -1,18 +1,22 @@
-import React from "react";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
 } from "@mui/material";
-import getFormatCurrency from "../hooks/getFormatCurrency";
+import React from "react";
 
-function AmortizationTable({ data, currency }) {
+function AmortizationTable({ tableName, rows, columns = [] }) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{
+        overflowX: "hidden",
+      }}
+    >
       <h3
         style={{
           width: "100%",
@@ -21,26 +25,22 @@ function AmortizationTable({ data, currency }) {
           marginLeft: "10px",
         }}
       >
-        Amortization Schedule
+        {tableName}{" "}
       </h3>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Month</TableCell>
-            <TableCell>Principal</TableCell>
-            <TableCell>Interest</TableCell>
-            <TableCell>Remaining Balance</TableCell>
+            {columns.map((column) => (
+              <TableCell key={column}>{column}</TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {rows.map((row) => (
             <TableRow key={row.month}>
-              <TableCell>{row.month}</TableCell>
-              <TableCell>
-                {getFormatCurrency(row.principal, currency)}
-              </TableCell>
-              <TableCell>{getFormatCurrency(row.interest, currency)}</TableCell>
-              <TableCell>{getFormatCurrency(row.balance, currency)}</TableCell>
+              {Object.values(row).map((value, index) => (
+                <TableCell key={index}>{value}</TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>
