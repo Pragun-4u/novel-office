@@ -11,7 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import AdbIcon from "@mui/icons-material/Adb";
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Home", "Exchange Rate (Live)"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
@@ -34,8 +34,17 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="absolute">
-      <Container maxWidth="xl">
+    <AppBar
+      position="relative"
+      sx={{
+        width: "100vw",
+      }}
+    >
+      <Container
+        sx={{
+          width: "100%",
+        }}
+      >
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
