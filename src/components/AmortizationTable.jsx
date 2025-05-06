@@ -13,18 +13,13 @@ import getFormatCurrency from "../hooks/getFormatCurrency";
 function AmortizationTable({ data, currency }) {
   return (
     <TableContainer component={Paper}>
-      <h3
-        style={{
-          width: "100%",
-          whiteSpace: "nowrap",
-          fontSize: "20px",
-          marginLeft: "10px",
-        }}
-      >
-        Amortization Schedule
-      </h3>
       <Table>
         <TableHead>
+          <caption
+            style={{ width: "100%", whiteSpace: "nowrap", fontSize: "20px" }}
+          >
+            Amortization Schedule
+          </caption>
           <TableRow>
             <TableCell>Month</TableCell>
             <TableCell>Principal</TableCell>
