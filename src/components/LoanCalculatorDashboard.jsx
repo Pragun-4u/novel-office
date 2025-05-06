@@ -1,31 +1,42 @@
 import { Button, TextField } from "@mui/material";
-import React, { useState } from "react";
-import useCalculateEMI from "../hooks/useCalculateEMI";
+import React, { useMemo, useState } from "react";
 import getFormatCurrency from "../hooks/getFormatCurrency";
 import useCalculateAmortizationSchedule from "../hooks/useAmortizationSchedule";
-import AmortizationTable from "./AmortizationTable";
+import useCalculateEMI from "../hooks/useCalculateEMI";
+import Table from "./Table";
+
+const fields = [
+  {
+    slug: "principal",
+    label: "Loan Amount",
+  },
+  {
+    slug: "interestRate",
+    label: "Interest Rate (%)",
+  },
+  {
+    slug: "years",
+    label: "Term (years)",
+  },
+];
 
 const LoanCalculatorDashboard = () => {
   const [formData, setFormData] = useState({});
-  const fields = [
-    {
-      slug: "principal",
-      label: "Loan Amount",
-    },
-    {
-      slug: "interestRate",
-      label: "Interest Rate (%)",
-    },
-    {
-      slug: "years",
-      label: "Term (years)",
-    },
-  ];
 
   const calculatedEMI = useCalculateEMI(formData);
   const amortizedData = useCalculateAmortizationSchedule(formData);
 
-  console.log({ calculatedEMI });
+  const rows = useMemo(
+    () =>
+      amortizedData.map((row) => ({
+        month: row.month,
+        principal: getFormatCurrency(row.principal, "INR"),
+        interest: getFormatCurrency(row.interest, "INR"),
+        balance: getFormatCurrency(row.balance, "INR"),
+      })),
+    [amortizedData]
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -33,7 +44,6 @@ const LoanCalculatorDashboard = () => {
     const principal = formdata.get("principal");
     const interestRate = formdata.get("interestRate");
     const years = formdata.get("years");
-    console.log(principal, interestRate, years);
     setFormData({ principal, interestRate, years });
   };
 
@@ -64,7 +74,7 @@ const LoanCalculatorDashboard = () => {
               flexDirection: "row",
               alignItems: "center",
               gap: "10px",
-              // border: "1px solid red",
+              flexWrap: "wrap",
               marginTop: "20px",
             }}
           >
@@ -94,7 +104,12 @@ const LoanCalculatorDashboard = () => {
             <h2>Monthly EMI : {getFormatCurrency(calculatedEMI, "INR")} </h2>
           </div>
           <div>
-            <AmortizationTable data={amortizedData} currency="INR" />
+            <Table
+              columns={["Month", "Principal", "Interest", "Remaining Balance"]}
+              rows={rows}
+              tableName="Amortization Schedule"
+              uniqueKey="month"
+            />
           </div>
         </>
       )}

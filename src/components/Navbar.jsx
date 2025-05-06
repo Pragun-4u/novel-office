@@ -10,8 +10,20 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+// border: "1px solid red",
+import MenuIcon from "@mui/icons-material/Menu";
 import AdbIcon from "@mui/icons-material/Adb";
-const pages = ["Home", "Exchange Rate (Live)"];
+import { Link } from "react-router";
+const pages = [
+  {
+    name: "Home",
+    path: "/",
+  },
+  {
+    name: "Exchange Rate",
+    path: "/exchange-rate",
+  },
+];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
@@ -46,12 +58,11 @@ function Navbar() {
         }}
       >
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -63,7 +74,15 @@ function Navbar() {
               hover: { color: "red" },
             }}
           >
-            LOGO
+            <img
+              src="https://media.licdn.com/dms/image/v2/D4E0BAQFkrI9K5ensDA/company-logo_200_200/company-logo_200_200/0/1691468523244/novel_office_india_logo?e=2147483647&v=beta&t=xmyvbfPr_nvN1s5X0XccU_D-HlQTdtmn0QO7lwWF8tc"
+              alt="logo"
+              height={"35px"}
+              width={"35px"}
+              style={{
+                borderRadius: "50%",
+              }}
+            />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -75,7 +94,7 @@ function Navbar() {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              {/* <MenuIcon /> */}
+              <MenuIcon />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -94,9 +113,16 @@ function Navbar() {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-                </MenuItem>
+                // <MenuItem key={page?.name} onClick={handleCloseNavMenu}>
+                <Link
+                  key={page?.name}
+                  to={page?.path}
+                  sx={{ textAlign: "center" }}
+                  style={{ textDecoration: "none" }}
+                >
+                  {page?.name}
+                </Link>
+                // </MenuItem>
               ))}
             </Menu>
           </Box>
@@ -119,15 +145,25 @@ function Navbar() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              // justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
             {pages.map((page) => (
-              <Button
-                key={page}
+              <Link
+                key={page?.name}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
+                to={page?.path}
+                style={{ textDecoration: "none", color: "white" }}
               >
-                {page}
-              </Button>
+                {page?.name}
+              </Link>
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
