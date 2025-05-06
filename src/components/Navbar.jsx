@@ -110,15 +110,25 @@ function Navbar() {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
+              sx={{
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "10px",
+                flexWrap: "nowrap",
+              }}
             >
               {pages.map((page) => (
-                // <MenuItem key={page?.name} onClick={handleCloseNavMenu}>
                 <Link
                   key={page?.name}
                   to={page?.path}
                   sx={{ textAlign: "center" }}
-                  style={{ textDecoration: "none" }}
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                    padding: "10px",
+                  }}
                 >
                   {page?.name}
                 </Link>
@@ -126,7 +136,6 @@ function Navbar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -143,7 +152,15 @@ function Navbar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            <img
+              src="https://media.licdn.com/dms/image/v2/D4E0BAQFkrI9K5ensDA/company-logo_200_200/company-logo_200_200/0/1691468523244/novel_office_india_logo?e=2147483647&v=beta&t=xmyvbfPr_nvN1s5X0XccU_D-HlQTdtmn0QO7lwWF8tc"
+              alt="logo"
+              height={"35px"}
+              width={"35px"}
+              style={{
+                borderRadius: "50%",
+              }}
+            />
           </Typography>
           <Box
             sx={{
