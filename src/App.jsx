@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Layout from "./layout/Layout";
 import Loader from "./components/Loader";
+import NotFound from "./ErrorBoundary/NotFound";
 
 const ExchangeRate = lazy(() => import("./components/ExchangeRate"));
 const LoanCalculatorDashboard = lazy(() =>
@@ -13,7 +14,7 @@ let router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    errorElement: <h1>404</h1>,
+    errorElement: <NotFound />,
     children: [
       {
         path: "/",
