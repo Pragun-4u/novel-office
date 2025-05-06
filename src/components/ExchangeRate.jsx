@@ -1,5 +1,5 @@
 import { Box, Button, TextField } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Dropdown from "./ui/Dropdown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import CheckIcon from "@mui/icons-material/Check";
@@ -7,20 +7,27 @@ import getConvertCurrency from "../hooks/getConvertCurrency";
 import getFormatCurrency from "../hooks/getFormatCurrency";
 import Table from "./Table";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import httpClient from "../api/httpClient";
+import Loader from "./Loader";
 
 const ExchangeRate = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [data, setData] = useState({});
+  const [conversionData, setConversionData] = useState({
+    conversion_rates: {},
+  });
   const conversion_rates = useMemo(() => {
-    return Object.keys(sampleData?.conversion_rates)?.map((key) => ({
+    return Object.keys(conversionData?.conversion_rates)?.map((key) => ({
       label: key,
       value: key,
     }));
-  }, [sampleData]);
+  }, [conversionData]);
 
   const convertedAmount = getConvertCurrency(data);
 
   const rows = useMemo(() => {
-    return Object.keys(sampleData?.conversion_rates)
+    return Object.keys(conversionData?.conversion_rates)
       ?.filter((currency) => currency !== data?.to)
       ?.map((currency) => {
         return {
@@ -45,6 +52,39 @@ const ExchangeRate = () => {
     const amount = formdata.get("amount");
     setData({ from, to, amount });
   };
+
+  const fetchData = async () => {
+    const data = await httpClient({
+      method: "GET",
+      url: `https://v6.exchangerate-api.com/v6/${
+        import.meta.env.VITE_EXCHANGE_RATE_API_KEY
+      }/latest/USD`,
+    });
+
+    setConversionData(data);
+  };
+
+  useEffect(() => {
+    try {
+      setIsLoading(true);
+      fetchData();
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <h1>Something went wrong</h1>;
+  }
+
   return (
     <div>
       <h2>Exchange Rate</h2>
@@ -98,21 +138,23 @@ const ExchangeRate = () => {
             {getFormatCurrency(data?.amount, data?.from)} ≈{" "}
             {getFormatCurrency(convertedAmount, data?.to)}
           </h3>
-          {!!sampleData?.time_last_update_utc && (
+          {!!conversionData?.time_last_update_utc && (
             <h5>
               Last updated:{" "}
-              {new Date(sampleData?.time_last_update_utc).toDateString()}
+              {new Date(conversionData?.time_last_update_utc).toDateString()}
             </h5>
           )}
-          <Table
-            rows={rows || []}
-            columns={["Currency", "Amount"]}
-            tableName={`All other conversions for ${getFormatCurrency(
-              data?.amount,
-              data?.from
-            )}`}
-            uniqueKey={"currency"}
-          />
+          {!!rows?.length && (
+            <Table
+              rows={rows || []}
+              columns={["Currency", "Amount"]}
+              tableName={`All other conversions for ${getFormatCurrency(
+                data?.amount,
+                data?.from
+              )}`}
+              uniqueKey={"currency"}
+            />
+          )}
         </>
       )}
     </div>
@@ -120,179 +162,3 @@ const ExchangeRate = () => {
 };
 
 export default ExchangeRate;
-
-const sampleData = {
-  result: "success",
-  documentation: "https://www.exchangerate-api.com/docs",
-  terms_of_use: "https://www.exchangerate-api.com/terms",
-  time_last_update_unix: 1746489601,
-  time_last_update_utc: "Tue, 06 May 2025 00:00:01 +0000",
-  time_next_update_unix: 1746576001,
-  time_next_update_utc: "Wed, 07 May 2025 00:00:01 +0000",
-  base_code: "USD",
-  conversion_rates: {
-    USD: 1,
-    AED: 3.6725,
-    AFN: 70.9027,
-    ALL: 86.8678,
-    AMD: 389.4909,
-    ANG: 1.79,
-    AOA: 919.5038,
-    ARS: 1178.5,
-    AUD: 1.5453,
-    AWG: 1.79,
-    AZN: 1.6999,
-    BAM: 1.7276,
-    BBD: 2,
-    BDT: 121.509,
-    BGN: 1.7272,
-    BHD: 0.376,
-    BIF: 2955.587,
-    BMD: 1,
-    BND: 1.2901,
-    BOB: 6.923,
-    BRL: 5.6559,
-    BSD: 1,
-    BTN: 84.3505,
-    BWP: 13.6143,
-    BYN: 3.0413,
-    BZD: 2,
-    CAD: 1.381,
-    CDF: 2886.1483,
-    CHF: 0.8227,
-    CLP: 946.7574,
-    CNY: 7.2431,
-    COP: 4254.9542,
-    CRC: 505.9271,
-    CUP: 24,
-    CVE: 97.3966,
-    CZK: 22.0005,
-    DJF: 177.721,
-    DKK: 6.5812,
-    DOP: 58.8522,
-    DZD: 132.6883,
-    EGP: 50.6824,
-    ERN: 15,
-    ETB: 132.8428,
-    EUR: 0.8833,
-    FJD: 2.2468,
-    FKP: 0.7521,
-    FOK: 6.5813,
-    GBP: 0.7521,
-    GEL: 2.745,
-    GGP: 0.7521,
-    GHS: 13.7906,
-    GIP: 0.7521,
-    GMD: 72.7028,
-    GNF: 8703.7978,
-    GTQ: 7.7024,
-    GYD: 209.2679,
-    HKD: 7.7508,
-    HNL: 25.9614,
-    HRK: 6.6552,
-    HTG: 130.6301,
-    HUF: 356.3312,
-    IDR: 16443.6105,
-    ILS: 3.6151,
-    IMP: 0.7521,
-    INR: 84.3508,
-    IQD: 1309.9884,
-    IRR: 41995.6325,
-    ISK: 129.111,
-    JEP: 0.7521,
-    JMD: 158.6626,
-    JOD: 0.709,
-    JPY: 143.7847,
-    KES: 129.2058,
-    KGS: 87.3506,
-    KHR: 4032.03,
-    KID: 1.5452,
-    KMF: 434.5531,
-    KRW: 1375.6102,
-    KWD: 0.3066,
-    KYD: 0.8333,
-    KZT: 517.192,
-    LAK: 21785.4162,
-    LBP: 89500,
-    LKR: 299.3162,
-    LRD: 200.0157,
-    LSL: 18.2768,
-    LYD: 5.4595,
-    MAD: 9.2385,
-    MDL: 17.1997,
-    MGA: 4446.0043,
-    MKD: 54.2855,
-    MMK: 2099.3614,
-    MNT: 3543.6361,
-    MOP: 7.9833,
-    MRU: 39.8248,
-    MUR: 45.3047,
-    MVR: 15.451,
-    MWK: 1742.5357,
-    MXN: 19.6455,
-    MYR: 4.2259,
-    MZN: 63.9101,
-    NAD: 18.2768,
-    NGN: 1600.0604,
-    NIO: 36.8143,
-    NOK: 10.3932,
-    NPR: 134.9609,
-    NZD: 1.6757,
-    OMR: 0.3845,
-    PAB: 1,
-    PEN: 3.6588,
-    PGK: 4.0862,
-    PHP: 55.6576,
-    PKR: 281.164,
-    PLN: 3.7678,
-    PYG: 8046.4945,
-    QAR: 3.64,
-    RON: 4.389,
-    RSD: 103.5255,
-    RUB: 81.534,
-    RWF: 1433.9697,
-    SAR: 3.75,
-    SBD: 8.5115,
-    SCR: 14.6471,
-    SDG: 453.9063,
-    SEK: 9.6581,
-    SGD: 1.2901,
-    SHP: 0.7521,
-    SLE: 22.7249,
-    SLL: 22724.9437,
-    SOS: 571.878,
-    SRD: 36.6987,
-    SSP: 4598.3522,
-    STN: 21.6407,
-    SYP: 12883.9004,
-    SZL: 18.2768,
-    THB: 32.92,
-    TJS: 10.6067,
-    TMT: 3.5,
-    TND: 2.9927,
-    TOP: 2.3547,
-    TRY: 38.5967,
-    TTD: 6.7909,
-    TVD: 1.5452,
-    TWD: 29.2122,
-    TZS: 2677.519,
-    UAH: 41.6165,
-    UGX: 3655.2702,
-    UYU: 41.9818,
-    UZS: 12913.3931,
-    VES: 88.7224,
-    VND: 25982.324,
-    VUV: 120.6716,
-    WST: 2.7713,
-    XAF: 579.4041,
-    XCD: 2.7,
-    XCG: 1.79,
-    XDR: 0.7392,
-    XOF: 579.4041,
-    XPF: 105.4055,
-    YER: 244.7999,
-    ZAR: 18.2775,
-    ZMW: 27.7202,
-    ZWL: 6.8208,
-  },
-};
