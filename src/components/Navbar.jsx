@@ -23,6 +23,10 @@ const pages = [
     name: "Exchange Rate",
     path: "/exchange-rate",
   },
+  {
+    name: "View Github Repo",
+    path: "https://github.com/Pragun-4u/novel-office",
+  },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -120,18 +124,19 @@ function Navbar() {
               }}
             >
               {pages.map((page) => (
-                <Link
-                  key={page?.name}
-                  to={page?.path}
-                  sx={{ textAlign: "center" }}
-                  style={{
-                    textDecoration: "none",
-                    color: "black",
-                    padding: "10px",
-                  }}
-                >
-                  {page?.name}
-                </Link>
+                <div key={page?.name} style={{ margin: "10px 0" }}>
+                  <Link
+                    to={page?.path}
+                    sx={{ textAlign: "center" }}
+                    style={{
+                      textDecoration: "none",
+                      color: "black",
+                      padding: "10px",
+                    }}
+                  >
+                    {page?.name}
+                  </Link>
+                </div>
                 // </MenuItem>
               ))}
             </Menu>
